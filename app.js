@@ -55,9 +55,14 @@ class UI {
         <td>${book.author}</td> 
         <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td> 
         `
-
         list.appendChild(row);
 
+    }
+
+    static clearFields(){
+        document.querySelector('#isbn').value = '';
+        document.querySelector('#title').value = '';
+        document.querySelector('#author').value = '';
     }
 }
 
@@ -76,6 +81,7 @@ document.querySelector('#book-form').addEventListener('submit',function(e){
     const book = new Book(title,author,isbn);
 
     UI.addBookToList(book);
+    UI.clearFields();
 
 })
 
