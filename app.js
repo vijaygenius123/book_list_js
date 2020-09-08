@@ -70,6 +70,18 @@ class UI {
             el.parentElement.parentElement.remove();
         }
     }
+
+    static showAlert(message, className){
+        const div = document.createElement('div');
+        div.className = `alert alert-${className}`;
+        div.appendChild(document.createTextNode(message));
+
+        const container = document.querySelector('.container');
+        const form = document.querySelector('#book-form');
+
+        container.insertBefore(div, form);
+
+    }
 }
 
 //Storage Class: Handles Storage
@@ -84,10 +96,14 @@ document.querySelector('#book-form').addEventListener('submit',function(e){
     const title = document.querySelector('#title').value;
     const author = document.querySelector('#author').value;
 
-    const book = new Book(title,author,isbn);
-
-    UI.addBookToList(book);
-    UI.clearFields();
+    if(title ==='' || author ==='' || isbn ===''){
+        console.log("Empty")
+        UI.showAlert("Please fill all fields", "danger")
+    } else {
+        const book = new Book(title, author, isbn);
+        UI.addBookToList(book);
+        UI.clearFields();
+    }
 
 })
 
