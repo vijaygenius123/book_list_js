@@ -1,5 +1,12 @@
 // Book Class: Represents A Book
 class Book {
+    constructor(title, author, isbn) {
+
+        this._title = title;
+        this._author = author;
+        this._isbn = isbn;
+    }
+
     get title() {
         return this._title;
     }
@@ -10,13 +17,6 @@ class Book {
 
     get isbn() {
         return this._isbn;
-    }
-
-    constructor(title, author, isbn) {
-
-        this._title = title;
-        this._author = author;
-        this._isbn = isbn;
     }
 }
 
@@ -59,19 +59,19 @@ class UI {
 
     }
 
-    static clearFields(){
+    static clearFields() {
         document.querySelector('#isbn').value = '';
         document.querySelector('#title').value = '';
         document.querySelector('#author').value = '';
     }
 
     static deleteBook(el) {
-        if(el.classList.contains('delete')){
+        if (el.classList.contains('delete')) {
             el.parentElement.parentElement.remove();
         }
     }
 
-    static showAlert(message, className){
+    static showAlert(message, className) {
         const div = document.createElement('div');
         div.className = `alert alert-${className}`;
         div.appendChild(document.createTextNode(message));
@@ -81,26 +81,55 @@ class UI {
 
         container.insertBefore(div, form);
 
-        setTimeout(()=> {
+        setTimeout(() => {
             document.querySelector('.alert').remove()
-        },2000)
+        }, 2000)
 
     }
 }
 
 //Storage Class: Handles Storage
+class Store {
+
+    static getBooks() {
+        let books;
+
+        if (localStorage.getItem('books') === null) {
+            books = [];
+        } else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+        return books;
+    }
+
+    static addBook(book) {
+        const books = Store.getBooks();
+        books.push(book);
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+
+    static removeBook(isbn) {
+        const books = Store.getBooks();
+        books.forEach((book, index) => {
+            if (book.isbn == isbn) {
+                books.splice(index, 1)
+            }
+        })
+        localStorage.setItem('books', JSON.stringify(books));
+    }
+}
 
 //Event: Display Books
 document.addEventListener('DOMContentLoaded', UI.displayBooks)
 //Event: Add A Book
-document.querySelector('#book-form').addEventListener('submit',function(e){
+document.querySelector('#book-form').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const isbn = document.querySelector('#isbn').value;
     const title = document.querySelector('#title').value;
     const author = document.querySelector('#author').value;
 
-    if(title ==='' || author ==='' || isbn ===''){
+    if (title === '' || author === '' || isbn === '') {
         console.log("Empty")
         UI.showAlert("Please fill all fields", "danger")
     } else {
@@ -113,7 +142,7 @@ document.querySelector('#book-form').addEventListener('submit',function(e){
 })
 
 //Event: Remove A Book
-document.querySelector('#book-list').addEventListener('click', function (e){
+document.querySelector('#book-list').addEventListener('click', function (e) {
     UI.deleteBook(e.target);
     UI.showAlert("Book removed", 'success')
 })
