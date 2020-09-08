@@ -1,42 +1,18 @@
 // Book Class: Represents A Book
 class Book {
+
     constructor(title, author, isbn) {
-
-        this._title = title;
-        this._author = author;
-        this._isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.isbn = isbn;
     }
 
-    get title() {
-        return this._title;
-    }
-
-    get author() {
-        return this._author;
-    }
-
-    get isbn() {
-        return this._isbn;
-    }
 }
 
 // UI Class: Handles UI Task
 class UI {
     static displayBooks() {
-        const StoredBooks = [
-            {
-                isbn: '1',
-                title: 'Book 1',
-                author: 'This Is The First Book'
-            },
-            {
-                isbn: '2',
-                title: 'Book 2',
-                author: 'This Is The Second Book'
-            }
-        ]
-
-        const books = StoredBooks;
+        const books = Store.getBooks();
 
 
         books.forEach(function (book) {
@@ -50,9 +26,9 @@ class UI {
         const row = document.createElement('tr');
 
         row.innerHTML = `
-        <td>${book.isbn}</td>
         <td>${book.title}</td>
-        <td>${book.author}</td> 
+        <td>${book.author}</td>
+        <td>${book.isbn}</td> 
         <td><a href="#" class="btn btn-danger btn-sm delete">X</a></td> 
         `
         list.appendChild(row);
@@ -135,6 +111,7 @@ document.querySelector('#book-form').addEventListener('submit', function (e) {
     } else {
         const book = new Book(title, author, isbn);
         UI.addBookToList(book);
+        Store.addBook(book);
         UI.showAlert("Book added", 'success')
         UI.clearFields();
     }
@@ -144,5 +121,6 @@ document.querySelector('#book-form').addEventListener('submit', function (e) {
 //Event: Remove A Book
 document.querySelector('#book-list').addEventListener('click', function (e) {
     UI.deleteBook(e.target);
+    Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
     UI.showAlert("Book removed", 'success')
 })
